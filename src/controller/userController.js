@@ -36,7 +36,11 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    const {email, passowrd} = req.body;
+    const {email, password} = req.body;
+
+    console.log("Login body:", req.body);
+    console.log("Email:", email);
+    console.log("Password:", password);
 
     const user = await prisma.user.findUnique({
         where: {email}
@@ -44,7 +48,7 @@ const login = async (req, res) => {
 
     if (!user) return res.status(401).json({message: "invalid user credentials"})
 
-    const passwordMatch = await bcrypt.compare(passowrd, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if(!passwordMatch) return res.status(401).json({message: "Wrong password"});
 
     const token = jwt.sign(
