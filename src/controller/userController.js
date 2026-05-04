@@ -134,10 +134,40 @@ const getPostById = async (req, res) => {
     }
 }
 
+// Update a post
+const updatePost = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {title, content} = req.body;
+
+        const existingPost = await prisma.post.findUnique({
+            where: {id: Number(id)}
+        });
+
+        if (!existingPost) {
+            return res.status(404).json({message: "Post not found"});
+        }
+
+        const updatedPost = await prisma.post.update({
+            where: {id: Number(id)},
+            data: {
+                title: title || existingPost.title,
+                content: content || existingPost.content
+            }
+        });
+
+        res.json({message: "Post updated successfully", post: updatedPost});
+    } catch (err) {
+        console.error("UPDATE POST ERROR:", err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 export default {
     register,
     login,
     createPost,
     getAllPosts,
-    getPostById
+    getPostById,
+    updatePost
 }
