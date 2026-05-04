@@ -59,7 +59,40 @@ const login = async (req, res) => {
     res.json({message: "Login successful", token});
 }
 
+const createPost =  async (req, res) => {
+    try {
+            const {title, content, authorId} = req.body;
+
+            if(!title || !content || !authorId) {
+                return res.status(400).json({message: "All fields are required"});
+            }
+
+            const user = await prisma.user.findUnique({
+                where: {id: Number(authorId)}
+            });
+
+            if (!user) {
+                return res.status(404).json({message: "Author not found"});
+            }
+
+            const post = await prisma.post.create({
+                data: {
+                    title,
+                    content,
+                    authorId: Number(authorId)
+                }
+            });
+            
+            res.status(201).json({message: "Post created successfully", post});
+
+    } catch (err) {
+        console.error("CREATE POST ERROR:", err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 export default {
     register,
-    login
-};
+    login,
+    createPost
+}
