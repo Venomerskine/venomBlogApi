@@ -112,10 +112,32 @@ const getAllPosts = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
-    
+
+// Get a single post by ID
+const getPostById = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const post = await prisma.post.findUnique({
+            where: {id: Number(id)},
+            include: {
+                author: true,
+                comments: true
+            }
+        });
+        if (!post) {
+            return res.status(404).json({message: "Post not found"});
+        }
+        res.json({message: "Post retrieved successfully", post});
+    } catch (err) {
+        console.error("GET POST BY ID ERROR:", err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 export default {
     register,
     login,
     createPost,
-    getAllPosts
+    getAllPosts,
+    getPostById
 }
