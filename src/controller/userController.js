@@ -65,7 +65,8 @@ const login = async (req, res) => {
 // Create a new post
 const createPost =  async (req, res) => {
     try {
-            const {title, content, authorId} = req.body;
+            const {title, content} = req.body;
+            const authorId = req.user.userId;
 
             if(!title || !content || !authorId) {
                 return res.status(400).json({message: "All fields are required"});
