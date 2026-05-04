@@ -95,8 +95,27 @@ const createPost =  async (req, res) => {
     }
 }
 
+
+// Get all posts
+const getAllPosts = async (req, res) => {
+    try {
+        const posts = await prisma.post.findMany({
+            include: {
+                author: true,
+                comments: true
+            },
+                orderBy: {createdAt: 'desc'}
+        });
+        res.json({message: "Posts retrieved successfully", posts});
+    } catch (err) {
+        console.error("GET ALL POSTS ERROR:", err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+    
 export default {
     register,
     login,
-    createPost
+    createPost,
+    getAllPosts
 }

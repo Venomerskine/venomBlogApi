@@ -9,6 +9,6 @@ router.get('/', (req, res) => {
 
 router.post('/register', userController.register)
 router.post('/login', userController.login)
-router.post('/posts', userController.createPost)
+// router.post('/posts', userController.createPost)
 
 export default router;
