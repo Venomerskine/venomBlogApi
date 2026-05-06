@@ -64,6 +64,73 @@ export const login = async (req, res) => {
     res.json({message: "Login successful", token});
 }
 
+// Get user profile
+export const getProfile = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const user = await prisma.user.findUnique({
+            where: {id: Number(userId)},
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                createdAt: true
+            }
+        });
+
+        if (!user) return res.status(404).json({message: "User not found"});
+
+        res.json({message: "User profile retrieved successfully", user});
+    } catch (err) {
+        console.error("GET PROFILE ERROR:", err);
+        res.status(500).json({ message: 'Error retrieving profile' });
+    }
+}
+
+// Update user profile
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const {firstName, lastName} = req.body;
+
+        const updatedUser = await prisma.user.update({
+            where: {id: Number(userId)},
+            data: {
+                firstName: firstName || undefined,
+                lastName: lastName || undefined
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                createdAt: true
+            }
+        });
+
+        res.json({message: "Profile updated successfully", user: updatedUser});
+    } catch (err) {
+        console.error("UPDATE PROFILE ERROR:", err);
+        res.status(500).json({ message: 'Error updating profile' });
+    }
+}
+
+// Delete user account
+export const deleteAccount = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        await prisma.user.delete({
+            where: {id: Number(userId)}
+        });
+
+        res.json({message: "Account deleted successfully"});
+    }       catch (err) {       
+        console.error("DELETE ACCOUNT ERROR:", err);
+        res.status(500).json({ message: 'Error deleting account' });
+    }
+}
 
 
 //export default {
