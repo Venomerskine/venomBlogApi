@@ -39,6 +39,8 @@ export const register = async (req, res) => {
 
 // Login user and return JWT token
 export const login = async (req, res) => {
+
+    console.log("Login request body:", req.body);
     const {email, password} = req.body;
 
     console.log("Login body:", req.body);

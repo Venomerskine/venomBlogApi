@@ -6,8 +6,10 @@ import {
   updatePost,
   deletePost
 } from "../controller/postController.js";
+import { verifyToken } from "../middleware/index.js";
 
 const router = express.Router();
+router.use(verifyToken);
 
 router.post("/", createPost);
 router.get("/", getAllPosts);
