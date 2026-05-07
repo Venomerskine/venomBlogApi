@@ -1,21 +1,25 @@
-import express from "express";
-import {verifyToken} from "../middleware/index.js";
+// import express from "express";
+// import {verifyToken} from "../middleware/index.js";
 
-import {
-  createComment,
-  getCommentsByPostId,
-  getCommentById,
-  updateComment,
-  deleteComment
-} from "../controller/commentController.js";
+// import {
+//   createComment,
+//   getCommentsByPostId,
+//   getCommentById,
+//   updateComment,
+//   deleteComment
+// } from "../controller/commentController.js";
 
-const router = express.Router();
-router.use(verifyToken);
+// const router = express.Router();
+// router.use(verifyToken);
 
-router.post("/", createComment);
-router.get("/post/:postId", getCommentsByPostId);
-router.get("/:id", getCommentById);
-router.put("/:id", updateComment);
-router.delete("/:id", deleteComment);
+// router.post("/:postId/comments", createComment);
 
-export default router;
+// router.get("/:postId/comments", getCommentsByPostId);
+
+// router.get("/:postId/comments/:commentId", getCommentById);
+
+// router.put("/:postId/comments/:commentId", updateComment);
+
+// router.delete("/:postId/comments/:commentId", deleteComment);
+
+// export default router;

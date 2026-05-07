@@ -4,8 +4,11 @@ import prisma from '../../prisma/prismaClient.js';
 
 export const createComment = async (req, res) => {
     try {
-        const { postId } = req.params;
-        const { content } = req.body;
+        // const { postId } = req.params;
+        const { content, postId } = req.body;
+
+        console.log("Create comment request body:", req.body);
+        console.log("Create comment request params:", req.params);
 
         // Check if the post exists
         const existingPost = await prisma.post.findUnique({
