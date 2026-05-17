@@ -59,7 +59,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
         {userId: user.id, email:user.email},
         process.env.JWT_SECRET,
-        {expiresIn: '1h'}
+        {expiresIn: '1hr'}
     )
     res.json({message: "Login successful", token});
 }
@@ -129,6 +129,20 @@ export const deleteAccount = async (req, res) => {
     }       catch (err) {       
         console.error("DELETE ACCOUNT ERROR:", err);
         res.status(500).json({ message: 'Error deleting account' });
+    }
+}
+
+export const verify = async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({user: decoded });
+    }catch {
+        res.sendStatus(403)
     }
 }
 
