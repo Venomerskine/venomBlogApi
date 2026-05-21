@@ -58,14 +58,17 @@ export const getAllPosts = async (req, res) => {
 // Get a single post by ID
 export const getPostById = async (req, res) => {
     try {
-        const {id} = req.params;
+        const {postId} = req.params;
+        console.log("GET POST BY ID Parameters:", {reqParams: req.params, postId});
         const post = await prisma.post.findUnique({
-            where: {id: Number(id)},
+            where: {id: Number(postId)},
             include: {
                 author: true,
                 comments: true
             }
         });
+
+        console.log("GET POST BY ID:", post);
         if (!post) {
             return res.status(404).json({message: "Post not found"});
         }
@@ -79,11 +82,11 @@ export const getPostById = async (req, res) => {
 // Update a post
 export const updatePost = async (req, res) => {
     try {
-        const {id} = req.params;
+        const {postId} = req.params;
         const {title, content} = req.body;
 
         const existingPost = await prisma.post.findUnique({
-            where: {id: Number(id)}
+            where: {id: Number(postId)}
         });
 
         if (!existingPost) {
@@ -91,7 +94,7 @@ export const updatePost = async (req, res) => {
         }
 
         const updatedPost = await prisma.post.update({
-            where: {id: Number(id)},
+            where: {id: Number(postId)},
             data: {
                 title: title || existingPost.title,
                 content: content || existingPost.content
@@ -108,10 +111,10 @@ export const updatePost = async (req, res) => {
 // Delete a post
 export const deletePost = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { postId } = req.params;
 
         const existingPost = await prisma.post.findUnique({
-            where: { id: Number(id) }
+            where: { id: Number(postId) }
         });
 
         if (!existingPost) {
@@ -119,7 +122,7 @@ export const deletePost = async (req, res) => {
         }
 
         await prisma.post.delete({
-            where: { id: Number(id) }
+            where: { id: Number(postId) }
         });
 
         res.json({ message: "Post deleted successfully" });
