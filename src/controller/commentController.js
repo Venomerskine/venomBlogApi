@@ -5,7 +5,9 @@ import prisma from '../../prisma/prismaClient.js';
 export const createComment = async (req, res) => {
     try {
         const { postId } = req.params;
-        const { content, } = req.body;
+        const { comment, } = req.body;
+        console.log("Create comment request body:", req.body);
+        console.log("Create comment request params:", req.params);
 
         console.log("Create comment request body:", req.body);
         console.log("Create comment request params:", req.params);
@@ -21,7 +23,7 @@ export const createComment = async (req, res) => {
 
         const newComment = await prisma.comment.create({
             data: {
-                content,
+                content: comment,
                 post: {
                     connect: { id: Number(postId) }
                 },

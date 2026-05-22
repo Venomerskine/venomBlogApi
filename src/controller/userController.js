@@ -25,7 +25,8 @@ export const register = async (req, res) => {
                 firstName,
                 lastName,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                role: "USER"
             }
         });
 
@@ -34,6 +35,39 @@ export const register = async (req, res) => {
         console.error("REGISTER ERROR:", err);
         res.status(500).json({ message: 'Error registering user' });
 }
+}
+
+export const registerBlogger = async (req, res) => {
+    const {firstName, lastName, email, password} = req.body;
+    console.log("Icoming body:", req.body);
+    console.log("Password type:", typeof password);
+    if (!password || typeof password !== "string") {
+    return res.status(400).json({ message: "Password is required" });  
+    }
+    try {
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        });
+        console.log("Existing user check:", existingUser);
+        if(existingUser) return res.status(400).json({ message: 'User already exists' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const newUser = await prisma.user.create({
+            data: {
+                firstName,
+                lastName,
+                email,
+                password: hashedPassword,
+                role: "BLOGGER"
+            }
+        });
+
+        res.status(201).json({ message: 'Blogger registered successfully' });  
+    } catch (err) {
+        console.error("REGISTER ERROR:", err);
+        res.status(500).json({ message: 'Error registering blogger' });
+    }
 }
 
 

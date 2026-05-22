@@ -64,7 +64,18 @@ export const getPostById = async (req, res) => {
             where: {id: Number(postId)},
             include: {
                 author: true,
-                comments: true
+                comments: {
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                email: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
