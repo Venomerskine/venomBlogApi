@@ -111,9 +111,11 @@ export const loginBlogger = async (req, res) => {
         where: {email}
     });
 
+    console.log("Found user:", user);
+
     if (!user) return res.status(401).json({message: "invalid user credentials"})
 
-    if (user.role !== "BLOGGER") {
+    if (user.role === "USER") {
         return res.status(403).json({ message: "Access denied: Not a blogger account" });
     }
 
