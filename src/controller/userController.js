@@ -98,6 +98,36 @@ export const login = async (req, res) => {
     res.json({message: "Login successful", token});
 }
 
+export const loginBlogger = async (req, res) => {
+
+    console.log("Login request body:", req.body);
+    const {email, password} = req.body;
+
+    console.log("Login body:", req.body);
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    const user = await prisma.user.findUnique({
+        where: {email}
+    });
+
+    if (!user) return res.status(401).json({message: "invalid user credentials"})
+
+    if (user.role !== "BLOGGER") {
+        return res.status(403).json({ message: "Access denied: Not a blogger account" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if(!passwordMatch) return res.status(401).json({message: "Wrong password"});
+
+    const token = jwt.sign(
+        {userId: user.id, email:user.email},
+        process.env.JWT_SECRET,
+        {expiresIn: '1hr'}
+    )
+    res.json({message: "Login successful", token});
+}
+
 // Get user profile
 export const getProfile = async (req, res) => {
     try {
