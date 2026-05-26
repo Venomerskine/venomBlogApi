@@ -75,7 +75,8 @@ export const getPostById = async (req, res) => {
                             }
                         }
                     }
-                }
+                },
+                published: true,
             }
         });
 
