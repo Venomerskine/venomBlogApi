@@ -73,9 +73,10 @@ export const updateComment = async (req, res) => {
     try {
         const { id } = req.params;
         const { content } = req.body;
+        const commentId = Number(id);
 
         const existingComment = await prisma.comment.findUnique({
-            where: { id: Number(id) }
+            where: { id: commentId }
         });
 
         if (!existingComment) {
@@ -83,7 +84,7 @@ export const updateComment = async (req, res) => {
         }
 
         const updatedComment = await prisma.comment.update({
-            where: { id: Number(id) },
+            where: { id: commentId },
             data: { content }
         });
 
@@ -96,11 +97,20 @@ export const updateComment = async (req, res) => {
 
 // Delete a comment
 export const deleteComment = async (req, res) => {
+    console.log("Delete comment request params:", req.params);
+
     try {
-        const { id } = req.params;
+        const { commentId } = req.params;
+        const parsedCommentId = Number(commentId);
+
+        console.log("Delete comment id:", parsedCommentId);
+
+        if (isNaN(parsedCommentId)) {
+            return res.status(400).json({ message: "Invalid comment ID" });
+        }
 
         const existingComment = await prisma.comment.findUnique({
-            where: { id: Number(id) }
+            where: { id: parsedCommentId }
         });
 
         if (!existingComment) {
@@ -108,23 +118,24 @@ export const deleteComment = async (req, res) => {
         }
 
         await prisma.comment.delete({
-            where: { id: Number(id) }
+            where: { id: parsedCommentId }
         });
 
         res.json({ message: "Comment deleted successfully" });
+
     } catch (err) {
         console.error("DELETE COMMENT ERROR:", err);
         res.status(500).json({ message: "Internal server error" });
     }
-}   
+};
 
 // get comment by id
 export const getCommentById = async (req, res) => {
     try {
         const { id } = req.params;
-
+        const commentId = Number(id);
         const comment = await prisma.comment.findUnique({
-            where: { id: Number(id) }
+            where: { id: commentId }
         });
 
         if (!comment) {

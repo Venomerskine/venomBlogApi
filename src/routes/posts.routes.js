@@ -5,7 +5,7 @@ import {
   getAllPosts,
   getPostById,
   updatePost,
-  deletePost
+  deletePost,
 } from "../controller/postController.js";
 
 import {

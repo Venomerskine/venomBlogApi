@@ -76,7 +76,6 @@ export const getPostById = async (req, res) => {
                         }
                     }
                 },
-                published: true,
             }
         });
 
@@ -95,7 +94,7 @@ export const getPostById = async (req, res) => {
 export const updatePost = async (req, res) => {
     try {
         const {postId} = req.params;
-        const {title, content} = req.body;
+        const {title, content, published} = req.body;
 
         const existingPost = await prisma.post.findUnique({
             where: {id: Number(postId)}
@@ -108,8 +107,9 @@ export const updatePost = async (req, res) => {
         const updatedPost = await prisma.post.update({
             where: {id: Number(postId)},
             data: {
-                title: title || existingPost.title,
-                content: content || existingPost.content
+                ...(title !== undefined && { title }),
+                ...(content !== undefined && { content }),
+                ...(published !== undefined && { published }),
             }
         });
 
@@ -144,6 +144,7 @@ export const deletePost = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 // export default {
 //     createPost,
